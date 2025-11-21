@@ -14,12 +14,12 @@ const Header: React.FC<HeaderProps> = ({ cartItems, user, onLogin, onLogout }) =
   return (
     <header className="header">
       <div className="logo">
-        <h1>🛍️ Mi Tienda</h1>
+        <h1> Mi Tienda</h1>
       </div>
       
       <nav className="nav">
         <div className="cart-info">
-          🛒 Carrito ({totalItems})
+           Carrito ({totalItems})
         </div>
         
         <div className="user-section">
