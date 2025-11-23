@@ -1,13 +1,14 @@
-// backend/config/database.js
+// backend/config/database.js - CONFIGURACIÓN CORREGIDA PARA PUERTO 3307
 const mysql = require('mysql2');
 require('dotenv').config();
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root', // Usuario por defecto de XAMPP
-  password: '', // Password por defecto (vacío en XAMPP)
+  user: 'root',
+  password: '', // Vacío por defecto en XAMPP
   database: 'ecommerce_db',
-  port: 3306
+  port: 3307, // ⚠️ IMPORTANTE: Usar puerto 3307 en lugar de 3306
+  connectTimeout: 60000
 });
 
 connection.connect((err) => {
@@ -15,10 +16,5 @@ connection.connect((err) => {
     console.error('Error conectando a MySQL:', err);
     return;
   }
-  console.log('✅ Conectado a MySQL con XAMPP');
+  console.log('✅ Conectado a MySQL en puerto 3307');
 });
-
-// Promisify para usar async/await
-const db = connection.promise();
-
-module.exports = db;
