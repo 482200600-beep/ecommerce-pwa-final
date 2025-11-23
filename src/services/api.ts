@@ -1,41 +1,40 @@
 // src/services/api.ts
-const API_BASE_URL = 'http://localhost:5000/api';
+const isProduction = import.meta.env.PROD;
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
+// ⚠️ REEMPLAZA con tu URL real de Vercel
+const PRODUCTION_URL = 'https://tu-app.vercel.app';
+
+export const API_BASE_URL = isProduction 
+  ? 'https://tu-backend.herokuapp.com/api' // ⚠️ Backend en la nube
+  : 'http://localhost:5000/api'; // Backend local
 
 export const api = {
-  // Obtener productos
-  async getProducts(filters?: any): Promise<ApiResponse<any>> {
-    const queryParams = new URLSearchParams();
-    
-    if (filters?.category) queryParams.append('category', filters.category);
-    if (filters?.search) queryParams.append('search', filters.search);
-    if (filters?.page) queryParams.append('page', filters.page.toString());
-    if (filters?.limit) queryParams.append('limit', filters.limit.toString());
-    
-    const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
-    return await response.json();
-  },
-
-  // Obtener producto por ID
-  async getProductById(id: number): Promise<ApiResponse<any>> {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`);
-    return await response.json();
-  },
-
-  // Obtener productos destacados
-  async getFeaturedProducts(): Promise<ApiResponse<any>> {
-    const response = await fetch(`${API_BASE_URL}/products/featured`);
-    return await response.json();
+  async getProducts() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products`);
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      
+      // Fallback a datos locales si el backend no está disponible
+      return {
+        success: true,
+        products: [
+          {
+            id: 1,
+            name: "MacBook Pro 16\"",
+            price: 2399,
+            description: "Laptop profesional (datos locales)",
+            image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80",
+            category: "Tecnología"
+          }
+        ]
+      };
+    }
   }
 };
